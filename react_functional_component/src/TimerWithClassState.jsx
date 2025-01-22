@@ -29,6 +29,20 @@ export default class TimerWithClassState extends React.Component {
         });
     };
 
+    componentDidMount() {
+        const userCount = localStorage.getItem('count');
+        if (userCount) this.setState({count: +userCount});
+    };
+
+    componentDidUpdate() {
+        localStorage.setItem('count', this.state.count);
+    };
+
+    componentWillUnmount() {
+        clearInterval(this.counterId);
+        this.handleStop();
+    };
+
     render() {
         return (
             <div

@@ -23,7 +23,7 @@ useEffect(() => {
 useEffect(() => {
     console.log('Update - Hello from Cliker. count = ' + count);
 
-    return () => console.log('Goodbay Cliker! - срабатывает при размонтировании ')
+    return () => console.log('Goodbay Cliker! - срабатывает (return) при размонтировании ')
 }, [count]);
 
 

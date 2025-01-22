@@ -7,6 +7,7 @@ const WithRef = () => {
     const numRef = useRef(0);
     const [count, setCount] = useState(0);
 
+
     const handleClick = () => {
         // numRef.current = 1;
 
@@ -16,6 +17,7 @@ const WithRef = () => {
         // setCount(count + 1);
         // setCount(count + 1);
 
+        // такой вариант прибаляет 3
         setCount((prevCount) => prevCount + 1);
         setCount((prevCount) => prevCount + 1);
         setCount((prevCount) => prevCount + 1);

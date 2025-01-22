@@ -1,84 +1,63 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 function Timer() {
-    const [count, setCount] = useState(0);
+    const [count, setCount] = useState(() => {
+        const savedCount = localStorage.getItem('timer');
+        return savedCount ? parseInt(savedCount, 10) : 0;
+    });
     const [isRunning, setIsRunning] = useState(false);
+    const intervalRef = useRef(null);       // хранение id интервала
 
-    // useEffect(() => {
-    //     // const countUser = localStorage.getItem("timer");
-    //     // console.log("Компонент был смонтирован localStorage.getItem countUser = " + countUser);
-
-    //     // if (countUser != null) {
-    //         // this.setState({ count: parseInt(countUser, 10) }, () => {
-    //         //     console.log(
-    //         //         "Компонент (есть) localStorage.getItem count = " + count
-    //         //     );
-    //         // );
-    //         // });
-    //         // setCount(parseInt(countUser, 10));
-    //         // setCount(parseInt(localStorage.getItem("timer"), 10));
-    //         // console.log("Компонент (есть) localStorage.getItem count(=countUser) = " + count);
-    //         // }
-    // }, []);
-
+    // Загружаем значение count из localStorage при монтировании компонента
     useEffect(() => {
-        console.log("UPDATE - Компонент (есть) localStorage.getItem count(=countUser) = " + count);
-        localStorage.setItem("timer", count);
-        // console.log("Компонент componentDidUpdate localStorage.setItem = " + localStorage.getItem("timer"));
-        console.log('UPADETE - isRUnning = ' + isRunning);
+        const saveCount = localStorage.getItem('timer');
+        console.log('при монтировании: saveCount = ' + saveCount);
+        if (saveCount != null) {
+            const parseCount = parseInt(saveCount, 10);
+            setCount(parseCount);
+            console.log('при монтировании: setCount = ' + parseCount);
+        }
+    }, []);
 
-    
+    // Сохраняем значение count в localStorage при его изменении
+    useEffect(() => {
+        localStorage.setItem('timer', count);
+        console.log('Сохраняем значение count в localStorage = ' + count);
     }, [count]);
 
+    // Управление запуском и остановкой таймера
     useEffect(() => {
         if (isRunning) {
-            console.log("useEffect TRUE - состояние isRunning before = " + isRunning);
-            stopTimer();
+            console.log("UPDATE startTimer: - count = " + count + ', isRunning = ' + isRunning);
+            intervalRef.current = setInterval(() => {
+                setCount((prevCount) => (prevCount + 1));
+                }, 1000);
         } else {
-            console.log("useEffect FALSE - состояние isRunning before = " + isRunning);
-            startTimer();
+            console.log("UPDATE stopTimer: - count = " + count + ', isRunning = ' + isRunning);
+            clearInterval(intervalRef.current);
         }
+// Очистка интервала при размонтировании компонента
+        return () => clearInterval(intervalRef.current);
 
-        return () => {
-            stopTimer();
-            console.log("Компонент был размонтирован");
-        };
     }, [isRunning]);
-    
+
+
     const toggleTimer = () => {
-        setIsRunning((prevIsRunning) => !prevIsRunning);
-        console.log("toggleTimer - состояние isRunning after = " + isRunning);
-    };
+        console.log('toggleTimer: count = ' + count + ', isRunning = ' + isRunning + ', localStogage = ' +localStorage.getItem('timer'));
+        setIsRunning(!isRunning);
 
-    const startTimer = () => {
-        console.log('START TIMER count = ' + count + ', isRuning = ' + isRunning);
-        setInterval(() => setCount(count + 1), 1000);
-        // setTimerId(setInterval(() => {
-        //     // this.setState(prevStat => ({count: prevStat.count + 1}));
-        //     setCount(count + 1)
-        // }, 1000)
-        // );
-        // timerId = setInterval(() => {
-        //     // this.setState(prevStat => ({count: prevStat.count + 1}));
-        //     setCount(count + 1);
-        // }, 1000);
-        // localStorage.setItem("timer", count);
-        console.log("Таймер запущен lcount = " + count + ', isRuning = ' + isRunning);
-    };
+        if (localStorage.getItem('timer') === null) {
+            localStorage.setItem('timer', 0);
+            console.log('0 - localStorage = ' + localStorage.getItem('timer'));
+        }
+    }
 
-    const stopTimer = () => {
-        // clearInterval(timerId);
-        console.log("Таймер остановлен");
-    };
-
-    const reset = () => {
-        stopTimer();
-        // this.setState({count: 0, isRunning: false});
-        setCount(0);
+    const resetTimer = () => {
         setIsRunning(false);
-        // localStorage.removeItem("timer");
-        console.log("Состояние сброшено");
+        setCount(0);
+        localStorage.setItem('timer', 0);
     };
+
 
     return (
         <div
@@ -95,9 +74,11 @@ function Timer() {
             <button onClick={toggleTimer}>
                 {isRunning ? "Stop" : "Start"}
             </button>
-            <button onClick={reset}>Reset</button>
+            <button onClick={resetTimer} >
+                Reset
+            </button>
         </div>
     );
 }
 
-export default Timer
+export default Timer;

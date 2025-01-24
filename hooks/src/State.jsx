@@ -7,6 +7,11 @@ export const State = () => {
         isCount: false,
     });
 
+    const [user, setUser] = useState({
+        name: 'Name',
+        age: 25,
+    })
+
 
     // const [value, setValue] = useState(() => {
     //     const userCount = localStorage.getItem('count');
@@ -16,21 +21,40 @@ export const State = () => {
     // setValue((prevValue) => {   return prevValue + 1;   })
 
     const handleCount = () => {
+        // для изменения не всех "свойств"
         setState({
             ...state,     //  взять объект state и обновить у него count (для объектов)
             count: state.count + 1});
+
+        setUser({
+            name: 'Ivan',
+            age: 55
+        });
     };
 
     const handleStatus = () => {
+        // изменение всех "свойств"
         setState({
             ...state,
             isCount: !state.isCount
         });
+        setUser({
+            ...user,
+            age: 30
+        })
     };
 
     useEffect(() => {
-        console.log('state = ' + state + ', count = ' + state.count + ', isCount = ' + state.isCount);
+        console.log('state: count = ' + state.count + ', isCount = ' + state.isCount);
     }, [state]);
+
+    useEffect(() => {
+        console.log('user: user = ' + user + ', name = ' + user.name + ', age = ' + user.age);
+    }, [user]);
+
+    useEffect(() => {
+        console.log('[]: name = ' + user.name + ', age = ' + user.age + ', state: count = ' + state.count + ', isCount = ' + state.isCount);
+    }, []);
 
 
     return <div>

@@ -6,6 +6,7 @@ import TimerWithClassState from "./TimerWithClassState";
 import Timer from "./Timer";
 import Ref from './Ref';
 import TimerLesson from './TimerLesson';
+import TimerWithUseReducer from './TimerWithUseReducer'
 
 function App() {
     const [isCliker, setCliker] = useState(false);
@@ -13,6 +14,7 @@ function App() {
     const [isTimer, setIsTimer] = useState(false);
     const [isRef, setIsRef] = useState(false);
     const [isTimerLesson, setIsTimerLesson] = useState(false);
+    const [isTimerWithUseReducer, setIsTimerWithUseReducer] = useState(false);
 
     return (
         <div className="App">
@@ -32,6 +34,9 @@ function App() {
 
             <button onClick={() => setIsTimerLesson(!isTimerLesson)}>Start Timer Lesson</button>
             {isTimerLesson && <TimerLesson />}
+            
+            <button onClick={() => setIsTimerWithUseReducer(!isTimerWithUseReducer)}>Start Timer with useReducer</button>
+            {isTimerWithUseReducer && <TimerWithUseReducer/>}
         </div>
     );
 }
